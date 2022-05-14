@@ -5,6 +5,6 @@ import retrofit2.http.GET
 
 interface TherapistApi {
 
-    @GET
+    @GET("therapists/1")
     suspend fun getTherapist(): Therapist
 }
