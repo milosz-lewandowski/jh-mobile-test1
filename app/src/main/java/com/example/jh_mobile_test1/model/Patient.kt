@@ -1,6 +1,6 @@
 package com.example.jh_mobile_test1.model
 
-data class PatientListItem(
+data class Patient(
     val id: Int,
     val name: String
 )
