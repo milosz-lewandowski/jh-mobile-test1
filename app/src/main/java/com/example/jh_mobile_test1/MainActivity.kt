@@ -10,9 +10,14 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.ViewModelProvider
+import com.example.jh_mobile_test1.repository.PatientRepository
 import com.example.jh_mobile_test1.ui.theme.Jhmobiletest1Theme
+import com.example.jh_mobile_test1.viewmodel.MainViewModel
+import com.example.jh_mobile_test1.viewmodel.MainViewModelFactory
 
 class MainActivity : ComponentActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -30,6 +35,16 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
+fun GetPatient() {
+    lateinit var viewModel: MainViewModel
+    val patientRepository = PatientRepository()
+    val viewModelFactory = MainViewModelFactory(patientRepository)
+    viewModel = viewModelFactory.create(MainViewModel::class.java)
+    viewModel.getPatient()
+    Text(text = viewModel.myResponse.toString())
+}
+
+@Composable
 fun Greeting(name: String) {
     Text(text = "Hello $name!")
 }
@@ -38,6 +53,6 @@ fun Greeting(name: String) {
 @Composable
 fun DefaultPreview() {
     Jhmobiletest1Theme {
-        Greeting("Android")
+        GetPatient()
     }
 }
