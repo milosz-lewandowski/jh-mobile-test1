@@ -1,6 +1,7 @@
 package com.example.jh_mobile_test1
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
@@ -15,20 +16,23 @@ import com.example.jh_mobile_test1.repository.PatientRepository
 import com.example.jh_mobile_test1.ui.theme.Jhmobiletest1Theme
 import com.example.jh_mobile_test1.viewmodel.MainViewModel
 import com.example.jh_mobile_test1.viewmodel.MainViewModelFactory
+import java.util.*
 
 class MainActivity : ComponentActivity() {
+
+    private lateinit var viewModel: MainViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            Jhmobiletest1Theme {
-                // A surface container using the 'background' color from the theme
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colors.background
-                ) {
-                    Greeting("Android")
-                }
+
+            val repository = PatientRepository()
+            val viewModelFactory = MainViewModelFactory(repository)
+            viewModel = ViewModelProvider(this, viewModelFactory).get(MainViewModel::class.java)
+            viewModel.getPatient()
+            viewModel.myResponse.observe(this, Observer { response ->
+            })
+
             }
         }
     }
@@ -41,7 +45,7 @@ fun GetPatient() {
     val viewModelFactory = MainViewModelFactory(patientRepository)
     viewModel = viewModelFactory.create(MainViewModel::class.java)
     viewModel.getPatient()
-    Text(text = viewModel.myResponse.toString())
+    Text(text = viewModel.myResponse.value?.id.toString())
 }
 
 @Composable
