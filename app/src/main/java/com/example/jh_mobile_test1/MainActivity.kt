@@ -1,51 +1,56 @@
 package com.example.jh_mobile_test1
 
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
+import androidx.compose.runtime.remember
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.lifecycle.ViewModelProvider
-import com.example.jh_mobile_test1.repository.PatientRepository
+import androidx.navigation.NavType
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
+import com.example.jh_mobile_test1.patientlist.PatientListScreen
 import com.example.jh_mobile_test1.ui.theme.Jhmobiletest1Theme
-import com.example.jh_mobile_test1.viewmodel.MainViewModel
-import com.example.jh_mobile_test1.viewmodel.MainViewModelFactory
-import java.util.*
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-
-    private lateinit var viewModel: MainViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
+            val navController = rememberNavController()
+            NavHost(navController = navController, startDestination = "patient_list_screen")
+            {
+                composable("patient_list_screen"){
+                    PatientListScreen(navController = navController)
+                }
+                composable("patient_screen/{patientId}",
+                    arguments = listOf(
+                        navArgument("patientId"){
+                            type = NavType.IntType
+                        }
+                    )) {
+                    val patientId = remember {
+                        it.arguments?.getInt("patientId")
 
-            val repository = PatientRepository()
-            val viewModelFactory = MainViewModelFactory(repository)
-            viewModel = ViewModelProvider(this, viewModelFactory).get(MainViewModel::class.java)
-            viewModel.getPatient()
-            viewModel.myResponse.observe(this, Observer { response ->
-            })
+                    }
+                }
 
             }
+
         }
     }
 }
 
+
+
 @Composable
 fun GetPatient() {
-    lateinit var viewModel: MainViewModel
-    val patientRepository = PatientRepository()
-    val viewModelFactory = MainViewModelFactory(patientRepository)
-    viewModel = viewModelFactory.create(MainViewModel::class.java)
-    viewModel.getPatient()
-    Text(text = viewModel.myResponse.value?.id.toString())
+
 }
 
 @Composable
